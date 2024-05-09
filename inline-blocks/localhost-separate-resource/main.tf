@@ -25,3 +25,34 @@ module "s3_bucket" {
   source = "../modules/separate-resource"
   name   = "jorgetovar"
 }
+
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = module.s3_bucket.bucket_name
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket-config" {
+  bucket = module.s3_bucket.bucket_name
+  rule {
+    id = "log"
+
+    expiration {
+      days = 90
+    }
+
+    status = "Enabled"
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+
+    transition {
+      days          = 60
+      storage_class = "GLACIER"
+    }
+  }
+}
