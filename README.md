@@ -18,17 +18,38 @@ We lose the flexibility to define and customize the resource properties in the r
 
 There are also the possibility of conflicts between the inline blocks and the module properties, which can lead to
 unexpected results.
+
 Finally, inline blocks have been deprecated in Terraform maybe for these reasons.
 
 ```hcl
-module "my_module" {
-  source = "./my_module"
-  my_resource {
-    name     = "my_resource"
-    property = "value"
+module "s3_bucket" {
+  source = "../modules/separate-resource"
+  name   = "jorgetovar"
+}
+
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = module.s3_bucket.bucket_name
+  versioning_configuration {
+    status = "Enabled"
   }
 }
+
 ```
+
+### Complexity
+
+We should organize our modules in a way that we can easily interact with a part of the infrastructure without having to
+understand the whole system.
+Our job is to remove the accidental complexity and make the system easier to understand. When we use inline blocks, we
+are adding complexity to the system (properties and thing that we may not need to know about).
+
+### Abstractions
+
+But we can also leverage abstractions and hide some details that are unnecessary, if all the buckets that we create have
+versioning, maybe it makes more sense to move that resource to the module.
+
+```hcl
 
 ## File Paths
 
@@ -36,11 +57,11 @@ By default, Terraform uses the path relative to the current working directory, i
 Therefore, the module should be able to read files from its folder instead of the one where we are currently executing
 the commands.
 
-We can leverage the path variables of terraform to read the files that are in the module folder. The path variables are:
+We can leverage the path variables of terraform to read the files that are in the module folder.The path variables are :
 
-- Path.module: The path to the module folder
-- Path.root: The path to the root module folder
-- Path.cwd: The path to the current working directory
+- Path.module : The path to the module folder
+- Path.root : The path to the root module folder
+- Path.cwd : The path to the current working directory
 
 ```hcl
 templatefile("${path.module}/${element(local.templates, count.index)}"
