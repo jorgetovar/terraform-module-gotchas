@@ -1,8 +1,7 @@
-# Module Gotchas in Terraform
 
 **Software is all about composition.**
 
-[GitHub repository](https://github.com/jorgetovar/terraform-module-gotchas)
+[DevTo Article](https://dev.to/aws-builders/terraform-module-gotchas-inline-block-example-s3-aws-1ib2)
 
 ## Modules
 
@@ -92,3 +91,4 @@ Modules allow us to create abstractions and reduce the complexity of our infrast
 - [GitHub](https://github.com/jorgetovar)
 
 If you enjoyed the articles, visit my blog [jorgetovar.dev](jorgetovar.dev)
+
