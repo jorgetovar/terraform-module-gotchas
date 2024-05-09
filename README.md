@@ -49,8 +49,6 @@ are adding complexity to the system (properties and thing that we may not need t
 But we can also leverage abstractions and hide some details that are unnecessary, if all the buckets that we create have
 versioning, maybe it makes more sense to move that resource to the module.
 
-```hcl
-
 ## File Paths
 
 By default, Terraform uses the path relative to the current working directory, in our case, the localhost root module.
