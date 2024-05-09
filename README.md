@@ -1,6 +1,14 @@
 # Module Gotchas in Terraform
 
-Software is all about composition.
+**Software is all about composition.**
+
+[GitHub repository](https://github.com/jorgetovar/terraform-module-gotchas)
+
+## Modules
+
+Modules are the key ingredient for writing reusable, maintainable code. When planning to deploy AWS infrastructure, it's better to leverage this functionality and be aware of the common gotchas to avoid conflicts with other Terraform configurations.
+
+## Terraform
 
 Terraform and Infrastructure as Code are no exceptions. We should use modules to create and compose our building blocks,
 just as we use functions to compose and create our business logic.
@@ -15,6 +23,8 @@ There are two gotchas we need to be aware of when using modules in Terraform:
 When we use modules, we should be careful with inline blocks, although they allow you to define some properties in the
 resource, it comes with a trade-off.
 We lose the flexibility to define and customize the resource properties in the root module.
+
+![Module structure](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ekz3vs2hpvflkf473dym.png)
 
 There are also the possibility of conflicts between the inline blocks and the module properties, which can lead to
 unexpected results.
@@ -34,8 +44,11 @@ resource "aws_s3_bucket_versioning" "versioning" {
     status = "Enabled"
   }
 }
-
 ```
+
+Defining Terraform configuration within both the module itself and the file that uses the module can lead to several issues
+
+![Deprecation](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/xq1g1ns02pdehkabre9v.png)
 
 ### Complexity
 
@@ -57,10 +70,25 @@ the commands.
 
 We can leverage the path variables of terraform to read the files that are in the module folder.The path variables are :
 
-- Path.module : The path to the module folder
-- Path.root : The path to the root module folder
-- Path.cwd : The path to the current working directory
+- **Path.module** : The path to the module folder
+- **Path.root** : The path to the root module folder
+- **Path.cwd** : The path to the current working directory
 
 ```hcl
 templatefile("${path.module}/${element(local.templates, count.index)}"
 ```
+
+![Module structure](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/iii16z78qxspxc5rs1gk.png)
+
+## Conclusion
+
+Terraform modules may be the best way to deploy our resources in AWS, but we must be aware of the challenges that come with this useful feature.
+
+Modules allow us to create abstractions and reduce the complexity of our infrastructure.
+
+
+- [LinkedIn](https://www.linkedin.com/in/jorgetovar-sa)
+- [Twitter](https://twitter.com/jorgetovar621)
+- [GitHub](https://github.com/jorgetovar)
+
+If you enjoyed the articles, visit my blog [jorgetovar.dev](jorgetovar.dev)
