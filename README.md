@@ -1,3 +1,4 @@
+# Terraform Module Gotchas
 
 **Software is all about composition.**
 
@@ -5,9 +6,11 @@
 
 Modules are the key ingredient for writing reusable, maintainable code. When planning to deploy AWS infrastructure, it's better to leverage this functionality and be aware of the common gotchas to avoid conflicts with other Terraform configurations.
 
+Modules are essentially terraform files with resource definitions that you can use elsewhere.
+
 ## Terraform
 
-Terraform and Infrastructure as Code are no exceptions. We should use modules to create and compose our building blocks,
+Terraform and Infrastructure as Code are no exceptions when we talk about software composition. We should use modules to create and compose our building blocks,
 just as we use functions to compose and create our business logic.
 
 There are two gotchas we need to be aware of when using modules in Terraform:
@@ -15,11 +18,15 @@ There are two gotchas we need to be aware of when using modules in Terraform:
 - File paths
 - Inline blocks
 
+**[GitHub Repository](https://github.com/jorgetovar/terraform-module-gotchas)**
+
 ## Inline blocks
 
-The configuration of some Terraform resources can be done through inline blocks or independent resources. It's a trade-off, and we have to be careful when using inline properties because we lose some flexibility to define and customize the resource properties from the client.
+The configuration of some Terraform resources can be done through inline blocks or independent resources.
 
 **Inline blocks example**
+
+These are properties of the resource that you can define within the same resource. For example, `ingress` and `egress` are inline blocks, and there are plenty of them in Terraform, such as `versioning` in an S3 bucket and many more.
 
 ```hcl
 resource "aws_security_group" "alb" {
@@ -41,9 +48,9 @@ resource "aws_security_group" "alb" {
 }
 ```
 
-There is also the possibility of conflicts between the inline blocks and the module properties, which can lead to unexpected results. Finally, inline blocks have been deprecated in Terraform, perhaps for these reasons.
-
 **Separate resource customization example**
+
+These are properties of the resource that you define as independent Terraform resources. In this case, we create our bucket using a module, but we modify some properties of this resource using new resources. In the example, we have added versioning to the bucket.
 
 ```hcl
 module "s3_bucket" {
@@ -60,13 +67,18 @@ resource "aws_s3_bucket_versioning" "versioning" {
 }
 ```
 
-Finally remember that defining Terraform configuration within both the module itself and the file that uses the module can lead to several issues.
+Inline blocks vs separate resources is a trade-off, and we must be cautious when using inline properties because we lose some flexibility in defining and customizing resource properties from the client's perspective.
+
+There is also the possibility of conflicts between inline blocks and client resources, which can lead to unexpected results. Finally, inline blocks have been deprecated in Terraform, perhaps for these reasons.
+
+Additionally, it's important to remember that defining Terraform configuration within both the module itself and the file that uses the module can lead to several issues.
 
 
 ### Complexity
 
 We should organize our modules in a way that we can easily interact with a part of the infrastructure without having to
 understand the whole system.
+
 Our job is to remove the accidental complexity and make the system easier to understand. When we use inline blocks, we
 are adding complexity to the system (properties and thing that we may not need to know about).
 
